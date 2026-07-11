@@ -16,7 +16,7 @@ def animate_roll(t, roll, dist):
     fig, ax = plt.subplots(figsize=(8,6))
 
     img = mpimg.imread(
-    r"C:\Users\lisan\Desktop\Lisandro\TdC\TFI-lisandro-cruzloresi-drone-roll\por_transfer\drone.png"
+    r"..\TFI-lisandro-cruzloresi-drone-roll\por_transfer\drone.png"
     )
 
     image = ax.imshow(

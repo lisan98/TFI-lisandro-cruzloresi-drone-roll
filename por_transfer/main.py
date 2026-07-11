@@ -3,12 +3,22 @@ import matplotlib.pyplot as plt
 import control as ctrl
 
 from config import *
+from animation import animate_roll
 
 #----------------------------------
-# Planta
+# Proceso
 #----------------------------------
 
 G = ctrl.tf([1],[J,0,0])
+
+#----------------------------------
+# ESC
+#----------------------------------
+
+ESC = ctrl.tf(
+    [1],
+    [TAU_ESC,1]
+)
 
 #----------------------------------
 # PID
@@ -20,14 +30,19 @@ C = ctrl.tf(
 )
 
 #----------------------------------
+# Elemento de medicion IMU(Giroscopio)
+#----------------------------------
+
+H = ctrl.tf([1], [TAU_IMU, 1])
+
+#----------------------------------
 # Sistema cerrado
 #----------------------------------
 
-H = ctrl.tf([1], [0.01, 1])
 
-T = ctrl.feedback(C * G, H)
+T = ctrl.feedback(C * ESC * G, H)
 
-Td = ctrl.minreal(G / (1 + C * G * H))
+Td = ctrl.minreal(G / (1 + C * G * H * ESC))
 #----------------------------------
 
 t = np.arange(
@@ -56,13 +71,13 @@ y = resp.outputs
 dist = np.zeros_like(t)
 
 #rafaga
-#dist[(t>=2)&(t<=2.2)] = 0.002
+dist[(t>=2)&(t<=2.2)] = 0.02
 
 #cambio de direccion del viento
-#dist += 0.001*(0.5*t-0.5)*(t>2)*(t<5)
+dist += 0.01*(0.5*t-0.5)*(t>4)*(t<6)
 
 # turbulencia
-dist += 0.003*np.sin(6*t)*(t>4)*(t<8)
+dist += 0.03*np.sin(6*t)*(t>8)*(t<10)
 
 resp_d = ctrl.forced_response(Td, t, dist)
 
@@ -91,11 +106,10 @@ plt.figure(figsize=(12,7))
 
 plt.subplot(211)
 
-plt.plot(
-    t,
-    np.degrees(y_total),
-    label="Roll"
-)
+plt.plot(t, np.degrees(y_total), label="Roll")
+
+plt.xlabel("Tiempo [s]")
+plt.ylabel("Ángulo de roll [°]")
 
 plt.grid()
 
@@ -108,9 +122,18 @@ plt.plot(
     dist,
     label="Perturbación"
 )
-
+plt.xlabel("Tiempo [s]")
+plt.ylabel("Torque [Nm]")
 plt.grid()
 
 plt.legend()
 
 plt.show()
+
+
+
+animate_roll(
+    t,
+    y_total,
+    dist
+)

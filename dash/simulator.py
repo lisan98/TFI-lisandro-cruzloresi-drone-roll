@@ -102,14 +102,14 @@ class DroneSimulator:
             dist[
                 (t >= 2) &
                 (t <= 2.2)
-            ] += 0.02
+            ] += 0.002
 
         # --------------------------
 
         if wind:
 
             dist += (
-                0.01 *
+                0.001 *
                 (0.5 * t - 0.5) *
                 (t > 4) *
                 (t < 6)
@@ -120,7 +120,7 @@ class DroneSimulator:
         if turbulence:
 
             dist += (
-                0.03 *
+                0.003 *
                 np.sin(6 * t) *
                 (t > 8) *
                 (t < 10)

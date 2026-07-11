@@ -1,11 +1,29 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
+import matplotlib.image as mpimg
+from matplotlib.transforms import Affine2D
+
+# -------------------------------
+# Imagen del drone
+# -------------------------------
+
+
 
 
 def animate_roll(t, roll, dist):
 
     fig, ax = plt.subplots(figsize=(8,6))
+
+    img = mpimg.imread(
+    r"C:\Users\lisan\Desktop\Lisandro\TdC\TFI-lisandro-cruzloresi-drone-roll\por_transfer\drone.png"
+    )
+
+    image = ax.imshow(
+        img,
+        extent=(-0.15, 0.15, -0.08, 0.08),
+        zorder=5
+    )
 
     ax.set_xlim(-0.35,0.35)
     ax.set_ylim(-0.25,0.25)
@@ -22,19 +40,6 @@ def animate_roll(t, roll, dist):
         linewidth=1
     )
 
-    # Barra del drone
-    drone, = ax.plot([],[],
-                     linewidth=5,
-                     color="black")
-
-    # Motores
-    motor1, = ax.plot([],[],
-                      'bo',
-                      markersize=12)
-
-    motor2, = ax.plot([],[],
-                      'bo',
-                      markersize=12)
 
     # Flecha del viento
     wind = ax.arrow(
@@ -61,27 +66,13 @@ def animate_roll(t, roll, dist):
 
         phi = roll[i]
 
-        x1 = -L*np.cos(phi)
-        y1 = -L*np.sin(phi)
-
-        x2 = L*np.cos(phi)
-        y2 = L*np.sin(phi)
-
-        drone.set_data(
-            [x1,x2],
-            [y1,y2]
+        trans = (
+            Affine2D()
+            .rotate_around(0, 0, phi)
+            + ax.transData
         )
 
-        motor1.set_data(
-            [x1],
-            [y1]
-        )
-
-        motor2.set_data(
-            [x2],
-            [y2]
-        )
-
+        image.set_transform(trans)
         if abs(dist[i]) > 1e-8:
 
             wind = ax.arrow(
@@ -108,7 +99,7 @@ def animate_roll(t, roll, dist):
             f"Roll : {np.degrees(phi):.2f}°"
         )
 
-        return drone,motor1,motor2,text,wind
+        return image, text, wind
 
     STEP = 10
 

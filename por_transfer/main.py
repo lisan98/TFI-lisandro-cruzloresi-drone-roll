@@ -3,7 +3,6 @@ import matplotlib.pyplot as plt
 import control as ctrl
 
 from config import *
-from animation import animate_roll
 
 #----------------------------------
 # Proceso
@@ -132,8 +131,3 @@ plt.show()
 
 
 
-animate_roll(
-    t,
-    y_total,
-    dist
-)

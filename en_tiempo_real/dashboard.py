@@ -270,7 +270,7 @@ class Dashboard(QWidget):
 
         
         self.figure = Figure(
-            figsize=(12,10)
+            figsize=(12,16)
         )
 
         self.figure.set_facecolor("#f2f2f2")
@@ -281,7 +281,8 @@ class Dashboard(QWidget):
         )
 
         self.left_panel.addWidget(
-            self.canvas
+            self.canvas,
+            stretch=10
         )
 
         self.ax_roll = self.figure.add_subplot(
@@ -301,7 +302,11 @@ class Dashboard(QWidget):
         )
 
         self.figure.subplots_adjust(
-            hspace=0.45
+            left=0.08,
+            right=0.98,
+            top=0.98,
+            bottom=0.07,
+            hspace=0.18
         )
 
         self.line_roll, = self.ax_roll.plot([], [])
@@ -321,11 +326,13 @@ class Dashboard(QWidget):
         )
 
         self.ax_roll.set_title(
-            "Ángulo de Roll"
+            "Ángulo de Roll",
+            fontsize=11
         )
 
         self.ax_roll.set_ylabel(
-            "Grados"
+            "Grados",
+            fontsize=11
         )
 
         self.ax_roll.grid(True)
@@ -347,13 +354,15 @@ class Dashboard(QWidget):
         )
 
         self.ax_error.set_title(
-            "Función de Error"
+            "Función de Error",
+            fontsize=11
         )
 
         self.ax_error.grid(True)
 
         self.ax_error.set_ylabel(
-            "Grados"
+            "Grados",
+            fontsize=11
         )
 
         self.ax_error.set_ylim(
@@ -416,6 +425,9 @@ class Dashboard(QWidget):
             DIST_YMIN,
             DIST_YMAX
         )
+        self.ax_roll.set_yticks([-45, -30, -15, 0, 15, 30, 45])
+
+        self.ax_error.set_yticks([-45, -30, -15, 0, 15, 30, 45])
 
     #===========================================================
     # UPDATE
